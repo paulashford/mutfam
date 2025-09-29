@@ -91,11 +91,6 @@ mf.main <- function(dbConn, cancer_type, version){
 # This is needed for p-values (has genes & FunFams!)
    ##dt_gene_ff_muts <- mf.get_gene_ff_muts(dbConn);
 
-  # Save useful data.tables for analysis_utils...
-  ### 18/05/17 saving disabled for general analysis (MF 2.2 complete so don't want to overwrite)
-  ###saveFileName=paste('../data/mutfam_enrichment_',version,'_',cancer_type,'.RData',sep="")
-  ###save(dt_me, dt_me_small, dt_combo, file=saveFileName);
-
 }
 
 # ------------------------------------------------------------------------------
@@ -260,36 +255,6 @@ mf.calc_mf <- function (dbConn, cancer_type){
   };
 
 
-  # sql_where <- "";
-  # if (missing(cancer_type)){
-  #   # All cancer or germline don't have WHERE
-  #   cancer_type <- "PANCANCER";
-  # } else
-  # {
-  #   if (str_to_upper(cancer_type)=="GBM"){
-  #     sql_where <- " WHERE PRIMARY_SITE='central_nervous_system' AND PRIMARY_HISTOLOGY='glioma' "
-  #   }
-  #   if (str_to_upper(cancer_type)=="BLADDER"){
-  #     sql_where <- " WHERE PRIMARY_SITE='urinary_tract' AND SITE_SUBTYPE='bladder' "
-  #   }
-  #   if (str_to_upper(cancer_type)=="HUMVAR_POLY"){
-  #     sql_where <- " WHERE PRIMARY_HISTOLOGY='Polymorphism' "
-  #   }
-  # }
-
-  # Add WHERE clause if specific Sfam/FunFam
-#   if (!missing(ff_num)){
-#     if (sql_where==""){
-#       sql_where <- paste(" WHERE FUNFAM_NUMBER = ", ff_num, sep="");
-#     }else{
-#       sql_where <- paste(sql_where, " AND FUNFAM_NUMBER = ", ff_num, sep="");
-#     }
-#   }
-
-  # GROUP BY FunFam
-#  sql <- paste(sql, sql_where, " GROUP BY SUPERFAMILY_ID, FUNFAM_NUMBER", sep="");
-
-
 }
 # ------------------------------------------------------------------------------
 # mf.calc_ng(dbConn, [ff_num]):
@@ -359,49 +324,6 @@ mf.calc_ng <- function (dbConn, cancer_type){
   };
 
 #
-#   # Only decoded GBM and Bladder cancer so far!
-#   # Need to build appropriate WHERE to count muts from the materialised view
-
-#
-#   # Swanton - special case - need better way of doing this!
-#   if (cancer_type == "SWAMUTS"){
-#   ###  sql <- "SELECT SUPERFAMILY_ID, FUNFAM_NUMBER, SUM(TOT_MUTS_HUMVAR) GENE_MUTS_IN_FFS FROM FGFR.VW_MF_SWAMUTS_GENE_BY_FUNFAM ";
-#   }
-#
-#   sql_where <- "";
-#   if (missing(cancer_type)){
-#     # PANCANCER cancer or germline don't have WHERE
-#     cancer_type <- "PANCANCER";
-#   } else
-#   {
-#     if (str_to_upper(cancer_type)=="GBM"){
-#       sql_where <- " WHERE PRIMARY_SITE='central_nervous_system' AND PRIMARY_HISTOLOGY='glioma' "
-#     }
-#     if (str_to_upper(cancer_type)=="BLADDER"){
-#       sql_where <- " WHERE PRIMARY_SITE='urinary_tract' AND SITE_SUBTYPE='bladder' "
-#     }
-#   }
-#
-# #   # Add WHERE clause if specific FunFam
-# #   if (!missing(ff_num)){
-# #     if (sql_where==""){
-# #       sql_where <- paste(" WHERE FUNFAM_NUMBER = ", ff_num, sep="");
-# #     }else{
-# #       sql_where <- paste(sql_where, " AND FUNFAM_NUMBER = ", ff_num, sep="");
-# #     }
-# #   }
-#
-#   # GROUP BY FunFam
-#   sql <- paste(sql, sql_where, " GROUP BY SUPERFAMILY_ID, FUNFAM_NUMBER", sep="");
-#
-#   # Finally, execute SQL!
-#   dt_ng <- data.table(dbGetQuery(dbConn, sql));
-#   if (is.na(dt_ng)) {
-#     return(0)
-#     } else {
-#       setkey(dt_ng, SUPERFAMILY_ID, FUNFAM_NUMBER);
-#       return(dt_ng);
-#     }
 }
 
 
@@ -467,34 +389,6 @@ mf.get_ff_aa_range <- function (dbConn){
 # 21/03/16 ranges don't work this way...
 return("Needs updating")
 
- # sql <- paste("SELECT SUPERFAMILY_ID,FUNFAM_NUMBER,AA_RANGE,AA_BOTTOM,AA_TOP,FF_LEN,UNIPROT_ACC,GENE_ID,GENE_NAME FROM FGFR.VW_MF_FUNFAM_UNIPROT", sep="");
- # get_ff_aa_range <- data.table(dbGetQuery(dbConn,sql));
- # if (is.na(get_ff_aa_range)) {
- #   return(0)
- #   } else {
- #     #setkey(get_ff_aa_range,GENE_NAME,FUNFAM_NUMBER);
- #     setkey(get_ff_aa_range,SUPERFAMILY_ID,FUNFAM_NUMBER);
- #     return(get_ff_aa_range);
- #   }
-}
-
-# ------------------------------------------------------------------------------
-# mf.get_gene_ff_muts(dbConn):
-#  *** USE NEW MV THAT INCLUDES UP ID, CORRECT JOIN AND SFAM NUMBER
-# Gets mut counts by gene and FunFam
-# Needed for assessing p-values on a gene-by-gene basis (for each FunFam!)
-# ------------------------------------------------------------------------------
-# mf.get_gene_ff_muts <- function (dbConn){
-#  require (data.table);
-#  sql <- paste("SELECT GENE_NAME, FUNFAM_NUMBER, TOT_MUTS_COSMIC FROM FGFR.VW_MF_COSMUT_GENES_AND_FUNFAMS", sep="");
-#  get_gene_ff_muts <- data.table(dbGetQuery(dbConn,sql));
-#  if (is.na(get_gene_ff_muts)) {
-#    return(0)
-#    } else {
-#      setkey(get_gene_ff_muts,GENE_NAME,FUNFAM_NUMBER);
-#      return(get_gene_ff_muts);
-#    }
-# }
 
 # ------------------------------------------------------------------------------
 # mf.get_sf_ff_info(dbConn):

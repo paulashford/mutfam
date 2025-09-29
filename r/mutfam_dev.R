@@ -2,7 +2,6 @@
 # Scratch / dev area
 
 # [0] Init
-  setwd('~/woofgit/mutfam/r');
   source('mutfam_enrichment_tsv.R');
   source('mutfam_enrichment.R')
   
@@ -13,7 +12,7 @@
   #ssh -N -L1521:gene3d01:1521 gene3d01 -v
   library(RJDBC);
   drv <- JDBC("oracle.jdbc.OracleDriver",classPath = "../db/ojdbc6.jar");
-  con <- dbConnect(drv, "jdbc:oracle:thin:@localhost:1521:FGFR","FGFR_READER2","4fgfruse");
+  con <- dbConnect(drv, "jdbc:oracle:thin:@localhost:1521:FGFR","XXXXXX","XXXXXXXX");
 
 # [2] Get MutFams (LUAD) using Oracle db (old data!)
     cancer_type <- "LUAD";
@@ -97,21 +96,3 @@
   dt_combo <- dt_combo[ !is.na( dt_combo$ef ), ];
   dt_combo <- dt_combo[ order( rank( -ef ) ) ];
 
-
-
-
-
-
-# ----- NEW METHOD APPROACH ----
-# 1. dt11c_neomap_ff has MUT_AMINO_IN_RANGE but out of range entries deleted!
-  # neoclust_analysis_11.R
-    # check funfam dom range on uniprot
-  #  dt11c_neomap_ff[ , MUT_AMINO_IN_RANGE := ifelse(up_aapos >= AA_RANGE_LOW & up_aapos <= AA_RANGE_HIGH, 1, 0 ) ];
-
-    # remove if not in FunFam (lots of cartesian rows too!)
-   # dt11c_neomap_ff <- dt11c_neomap_ff [MUT_AMINO_IN_RANGE == 1, ];  # 18,990
-
-# 2. dtnn_neoclust_counts / ff would be ideal for counting 
-
-# 3. Suggest assuming we are using VarSite only and have those fields.
-# Includes all FFs... will know PDB mapping later.

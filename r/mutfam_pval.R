@@ -88,20 +88,7 @@ evs <- function(x){return (eval(x))};
 dt_Combo_p_val[, pval:=evs(parse(text=testCol)), by=1:nrow(dt_Combo_p_val)];
 dt_Combo_p_val <- arrange(dt_Combo_p_val, desc(ef));
 
-# 25/02/16 - Added this (needs testing!)
-# return Benjami-Hochberg adjusted p-vals too and sort by them...
-# 23/03/16 - ** Can't do this here - don't have full table during batch jobs!!! - see mutfam_pval_adjust.R/adjust_pval **
-####dt_Combo_pvc <- arrange(dt_Combo_p_val[,pval_corr:=p.adjust(dt_Combo_p_val[,pval], method="BH")], pval_corr);
-
 out_file <- paste(sub(".RData","",datFile),"_PVAL_", PVAL_RANDS, "_BATCH_", BATCH_SIZE, "_TASKID_", taskID ,".csv", sep="");
-# 25/02/16 write the BH version...
-#write.csv(dt_Combo_p_val, file=out_file, row.names=range);
-##write.csv(dt_Combo_pvc, file=out_file, row.names=range);
 
 write.csv(dt_Combo_p_val, file=out_file, row.names=range);
 
-
-# p<0.05 only
-#dt_Combo_pval005 <- dt_Combo_p_val[pval<0.05,];
-#data_file <- paste(datFile, ".csv",sep="");
-#write.csv(dt_Combo_pval005, file=data_file);
